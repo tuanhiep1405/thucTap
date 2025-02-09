@@ -5,9 +5,15 @@
 @section('content')
     <h1 class="text-center">QUẢN LÝ KHÁCH HÀNG</h1>
 
-    @if (session()->has('sucsses') && session()->get('sucsses'))
-        <div class="alert alert-info" role="alert">
-            Thêm mới thành công
+    @if (session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    @if (session('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
         </div>
     @endif
     <a class="btn btn-info" href="{{ route('customers.create') }}">Create</a>

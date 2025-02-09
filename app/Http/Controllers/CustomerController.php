@@ -118,9 +118,9 @@ class CustomerController extends Controller
         if (!$customer) {
             return redirect()->back()->with('error', 'Khách hàng không tồn tại.');
         }
-    
+        $xoaanh = $customer->image;
         if ($customer->image) {
-            Storage::delete('public/' . $customer->image);
+            Storage::delete($xoaanh);
         }
     
         $customer->delete();
