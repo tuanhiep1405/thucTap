@@ -51,7 +51,7 @@
             <div class="mb-3 row">
                 <label for="is_active" class="col-4 col-form-label">is_active</label>
                 <div class="col-8">
-                    <input type="checkbox" class="form-checkbox" value="0" name="is_active" id="is_active" @checked($data->is_active)/>
+                    <input type="checkbox" class="form-checkbox" value="1" name="is_active" id="is_active" @checked($data->is_active)/>
                 </div>
             </div>
             <div class="mb-3 row">

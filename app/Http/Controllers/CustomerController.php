@@ -38,6 +38,7 @@ class CustomerController extends Controller
             'is_active' => ['nullable', Rule::in(0, 1)],
             'image' => 'nullable|image|max:2048',
         ]);
+        $data['is_active'] ??= 0;
         try {
             if ($request->hasFile('image')) {
                 $data['image'] = Storage::put('customers', $request->file('image'));
@@ -61,8 +62,8 @@ class CustomerController extends Controller
      */
     public function show(Customer $customer)
     {
-       $data = Customer::find($customer->id);
-       return view(self::PATH_VIEW . __FUNCTION__, compact('data'));
+        $data = Customer::find($customer->id);
+        return view(self::PATH_VIEW . __FUNCTION__, compact('data'));
     }
 
     /**
@@ -112,6 +113,18 @@ class CustomerController extends Controller
      */
     public function destroy(Customer $customer)
     {
-        //
+        $customer = Customer::find($customer->id);
+
+        if (!$customer) {
+            return redirect()->back()->with('error', 'Khách hàng không tồn tại.');
+        }
+    
+        if ($customer->image) {
+            Storage::delete('public/' . $customer->image);
+        }
+    
+        $customer->delete();
+    
+        return redirect()->route('customers.index')->with('success', 'Khách hàng đã được xóa.');
     }
 }
