@@ -16,7 +16,7 @@ class CustomerController extends Controller
      */
     public function index()
     {
-        //
+        return response()->json(Customer::all(), 200);
     }
 
     /**
@@ -24,7 +24,16 @@ class CustomerController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|max:255',
+            'email' => ['required', 'max:255', Rule::unique('customers')],
+            'phone' => ['required', 'max:20', Rule::unique('customers')],
+            'address' => 'nullable',
+            'is_active' => ['nullable', Rule::in(0, 1)],
+            'image' => 'nullable|image|max:2048',
+        ]);
+        $product = Customer::create($request->all());
+        return response()->json($product, 201);
     }
 
     /**
@@ -36,7 +45,8 @@ class CustomerController extends Controller
             $data = Customer::find($id);
             return response()->json([
                 'message' => 'Chi tiết sản phẩm có id = ' . $id,
-                'data' => $data
+                'data' => $data,
+                200
             ]);
         } catch (\Throwable $th) {
             return response()->json([
@@ -71,7 +81,8 @@ class CustomerController extends Controller
             }
             return response()->json([
                 'message' => 'Cập nhập thành công sản phẩm có id = ' . $id,
-                'data' => $data
+                'data' => $data,
+                200
             ]);
         } catch (\Throwable $th) {
             if (!empty($data['image']) && Storage::exists($data['image'])) {
@@ -83,6 +94,7 @@ class CustomerController extends Controller
             );
             return response()->json([
                 'message' => 'Cập nhập không thành công sản phẩm có id = ' . $id,
+                404
 
             ]);
         }
@@ -93,6 +105,12 @@ class CustomerController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $product = Customer::find($id);
+        if (!$product) {
+            return response()->json(['message' => 'Customer not found'], 404);
+        }
+
+        $product->delete();
+        return response()->json(['message' => 'Customer deleted'], 200);
     }
 }

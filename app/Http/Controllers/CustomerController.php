@@ -6,9 +6,20 @@ use App\Models\Customer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
+use App\Jobs\SendWelcomeEmail;
+use App\Models\User;
 
 class CustomerController extends Controller
 {
+    public function register(Request $request)
+{
+    $user = User::create($request->all());
+
+    // Đẩy Job vào queue
+    SendWelcomeEmail::dispatch($user);
+
+    return response()->json(['message' => 'User registered, email will be sent!']);
+}
     const PATH_VIEW = 'customers.';
     public function index()
     {
